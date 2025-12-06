@@ -1,25 +1,17 @@
-import * as z from "zod";
-
+import { $ZodType, $ZodDefault, $ZodError } from "zod/v4/core";
 import { getSchemaWithPreprocessor } from "./preprocessors.js";
 import {
+  ErrorWithContext,
   makeDefaultReporter,
-  errorMap,
-  type TokenFormatters,
-  type ErrorWithContext,
-  type Reporter,
+  Reporter,
+  TokenFormatters,
 } from "./reporter.js";
-
+import type * as z from "zod";
 import type { DeepReadonlyObject } from "./util/type-helpers.js";
 
-export type SimpleSchema<TOut = any, TIn = any> = z.ZodType<
-  TOut,
-  z.ZodTypeDef,
-  TIn
->;
+export type SimpleSchema<Out = any, In = any> = $ZodType<Out, In>;
 
-export type DetailedSpec<
-  TSchema extends SimpleSchema = SimpleSchema<unknown, unknown>,
-> =
+export type DetailedSpec<TSchema extends SimpleSchema = SimpleSchema> =
   TSchema extends SimpleSchema<any, infer TIn>
     ? {
         /**
@@ -31,6 +23,7 @@ export type DetailedSpec<
         /**
          * A description of this env var that's provided as help text if the
          * passed value fails validation, or is required but missing.
+         * @deprecated use e.g. `z.string().meta({ description: 'Your description' })` instead
          */
         description?: string;
 
@@ -110,6 +103,20 @@ export type ParseEnv = <T extends Schemas & RestrictSchemas<T>>(
   reporterOrTokenFormatters?: Reporter | TokenFormatters,
 ) => DeepReadonlyObject<ParsedSchema<T>>;
 
+const handleDeprecation = (type: $ZodType) => {
+  if ((type as z.ZodType).meta()?.deprecated) {
+    throw new $ZodError([
+      {
+        code: "invalid_type",
+        message: "This var is deprecated.",
+        input: type,
+        path: [],
+        expected: "undefined",
+      },
+    ]);
+  }
+};
+
 /**
  * Parses the passed environment object using the provided map of Zod schemas
  * and returns the immutably-typed, parsed environment.
@@ -124,14 +131,13 @@ export function parseEnvImpl<T extends Schemas & RestrictSchemas<T>>(
   schemas: T,
   reporterOrTokenFormatters: Reporter | TokenFormatters,
 ): DeepReadonlyObject<ParsedSchema<T>> {
+  const parsed: Record<string, unknown> = {} as DeepReadonlyObject<
+    ParsedSchema<T>
+  >;
   const reporter =
     typeof reporterOrTokenFormatters === "function"
       ? reporterOrTokenFormatters
       : makeDefaultReporter(reporterOrTokenFormatters);
-
-  const parsed: Record<string, unknown> = {} as DeepReadonlyObject<
-    ParsedSchema<T>
-  >;
 
   const errors: ErrorWithContext[] = [];
 
@@ -141,10 +147,16 @@ export function parseEnvImpl<T extends Schemas & RestrictSchemas<T>>(
     let defaultUsed = false;
     let defaultValue: unknown;
     try {
-      if (schemaOrSpec instanceof z.ZodType) {
-        if (envValue == null && schemaOrSpec instanceof z.ZodDefault) {
+      handleDeprecation(
+        "schema" in schemaOrSpec ? schemaOrSpec.schema : schemaOrSpec,
+      );
+
+      if (schemaOrSpec instanceof $ZodType) {
+        if (envValue == null && schemaOrSpec instanceof $ZodDefault) {
           defaultUsed = true;
-          defaultValue = schemaOrSpec._def.defaultValue();
+          const spec = schemaOrSpec._zod;
+          defaultValue = spec.def.defaultValue;
+
           // we "unwrap" the default value ourselves and pass it to the schema.
           // in the very unlikely case that the value isn't stable AND
           // validation fails, this ensures the default value we report is the
@@ -153,21 +165,17 @@ export function parseEnvImpl<T extends Schemas & RestrictSchemas<T>>(
           //  we invoked the default getter and got 0.7, and then ran the parser
           //  against a missing env var and it generated another default of 0.4,
           //  we'd report a default value that _should_ have passed.)
-          parsed[key] = schemaOrSpec.parse(defaultValue, { errorMap });
+          parsed[key] = (spec.def.innerType as z.ZodType).parse(defaultValue);
         } else {
-          parsed[key] = getSchemaWithPreprocessor(schemaOrSpec).parse(
-            envValue,
-            { errorMap },
-          );
+          parsed[key] = getSchemaWithPreprocessor(schemaOrSpec).parse(envValue);
         }
       } else if (envValue == null) {
         [defaultUsed, defaultValue] = resolveDefaultValueForSpec(
           schemaOrSpec.defaults,
           env["NODE_ENV"],
         );
-
         if (defaultUsed) {
-          parsed[key] = schemaOrSpec.schema.parse(defaultValue, { errorMap });
+          parsed[key] = (schemaOrSpec.schema as z.ZodType).parse(defaultValue);
         } else {
           // if there's no default, pass our envValue through the
           // schema-with-preprocessor (it's an edge case, but our schema might
@@ -175,13 +183,11 @@ export function parseEnvImpl<T extends Schemas & RestrictSchemas<T>>(
           // `null` for us).
           parsed[key] = getSchemaWithPreprocessor(schemaOrSpec.schema).parse(
             envValue,
-            { errorMap },
           );
         }
       } else {
         parsed[key] = getSchemaWithPreprocessor(schemaOrSpec.schema).parse(
           envValue,
-          { errorMap },
         );
       }
     } catch (e) {

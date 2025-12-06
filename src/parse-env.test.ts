@@ -480,7 +480,7 @@ describe("parseCore", () => {
     ).toThrow();
   });
 
-  const schemasWithDefaults: [z.ZodTypeAny, any][] = [
+  const schemasWithDefaults: [z.ZodType, any][] = [
     [z.number(), 5],
     [z.object({ a: z.string(), b: z.bigint() }), { a: "ok", b: 4n }],
   ];
