@@ -50,13 +50,13 @@
   },
   "scripts": {
     "prepare": "husky",
-    "pre-commit": "concurrently \"pnpm lint\" \"pnpm test\"",
-    "build": "concurrently \"pnpm build:mjs\" \"pnpm build:cjs\" \"pnpm build:copy\"",
+    "pre-commit": "run-s -l \"lint\" \"test\"",
+    "build": "run-s -l \"build:*\"",
     "build:clean": "rm -rf dist/ dist-cjs/",
     "build:mjs": "tsc --project tsconfig.build.json",
     "build:cjs": "tsc --project tsconfig.cjs.build.json",
     "build:copy": "cp package.cjs.json dist-cjs/package.json",
-    "test": "concurrently \"pnpm test:ts\" \"pnpm test:eslint\" \"pnpm test:vitest\" \"pnpm test:prettier\"",
+    "test": "run-p -cl \"test:*\"",
     "test:ts": "tsc --noEmit",
     "test:eslint": "eslint --color src",
     "test:vitest": "vitest run",
@@ -71,7 +71,7 @@
     "prepublishOnly": "run-s -l test build"
   },
   "peerDependencies": {
-    "zod": "4"
+    "zod": "^4"
   },
   "publishConfig": {
     "@henriquecarv:registry": "https://npm.pkg.github.com"
@@ -82,10 +82,10 @@
     "@commitlint/config-conventional": "20.5.0",
     "@types/node": "20.19.37",
     "@vitest/ui": "4.1.2",
-    "concurrently": "^9.2.1",
     "eslint": "9.39.4",
     "eslint-config-lostfictions": "8.1.1",
     "husky": "9.1.7",
+    "npm-run-all2": "^8.0.4",
     "prettier": "3.8.1",
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
