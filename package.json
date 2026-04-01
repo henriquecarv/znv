@@ -1,6 +1,6 @@
 {
-  "name": "znv",
-  "version": "0.5.0",
+  "name": "@henriquecarv/znv",
+  "version": "0.6.0",
   "description": "Parse your environment with Zod schemas",
   "license": "MIT",
   "keywords": [
@@ -9,14 +9,14 @@
     "zod",
     "validation"
   ],
-  "author": "s <https://github.com/lostfictions>",
-  "homepage": "https://github.com/lostfictions/znv",
+  "author": "Henrique Carvalho da Cruz <henriquecarv@gmail.com>",
+  "homepage": "https://github.com/henriquecarv/znv",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lostfictions/znv.git"
+    "url": "git+https://github.com/henriquecarv/znv.git"
   },
   "bugs": {
-    "url": "https://github.com/lostfictions/znv/issues"
+    "url": "https://github.com/henriquecarv/znv/issues"
   },
   "type": "module",
   "main": "dist-cjs/index.js",
@@ -49,56 +49,48 @@
     }
   },
   "scripts": {
-    "build": "run-s -l \"build:*\"",
+    "prepare": "husky",
+    "pre-commit": "concurrently \"pnpm lint\" \"pnpm test\"",
+    "build": "concurrently \"pnpm build:mjs\" \"pnpm build:cjs\" \"pnpm build:copy\"",
     "build:clean": "rm -rf dist/ dist-cjs/",
     "build:mjs": "tsc --project tsconfig.build.json",
     "build:cjs": "tsc --project tsconfig.cjs.build.json",
     "build:copy": "cp package.cjs.json dist-cjs/package.json",
-    "test": "run-p -cl \"test:*\"",
+    "test": "concurrently \"pnpm test:ts\" \"pnpm test:eslint\" \"pnpm test:vitest\" \"pnpm test:prettier\"",
     "test:ts": "tsc --noEmit",
     "test:eslint": "eslint --color src",
-    "test:jest": "jest --colors",
+    "test:vitest": "vitest run",
     "test:prettier": "prettier -l \"src/**/*\"",
     "test:attw": "attw . --pack --profile node16",
     "prettier": "prettier \"src/**/*\" --write",
-    "jest": "jest --colors --watch",
+    "vitest": "vitest --watch",
+    "lint": "eslint .",
+    "postlint": "prettier --check .",
+    "lint-fix": "eslint . --fix",
+    "postlint-fix": "prettier --write .",
     "prepublishOnly": "run-s -l test build"
   },
   "peerDependencies": {
-    "zod": "^4"
+    "zod": "4"
+  },
+  "publishConfig": {
+    "@henriquecarv:registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
-    "@types/jest": "^29.5.14",
-    "@types/node": "^22.13.10",
-    "eslint": "^9.22.0",
-    "eslint-config-lostfictions": "^7.0.0",
-    "jest": "^29.7.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^3.5.3",
-    "ts-jest": "^29.2.6",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3",
-    "zod": "~4.1.12"
+    "@arethetypeswrong/cli": "0.18.2",
+    "@commitlint/cli": "20.5.0",
+    "@commitlint/config-conventional": "20.5.0",
+    "@types/node": "20.19.37",
+    "@vitest/ui": "4.1.2",
+    "concurrently": "^9.2.1",
+    "eslint": "9.39.4",
+    "eslint-config-lostfictions": "8.1.1",
+    "husky": "9.1.7",
+    "prettier": "3.8.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3",
+    "vitest": "4.1.2",
+    "zod": "~4.3.6"
   },
-  "jest": {
-    "preset": "ts-jest/presets/default-esm",
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
-    "rootDir": "src",
-    "transform": {
-      "^.+\\.tsx?$": [
-        "ts-jest",
-        {
-          "isolatedModules": true,
-          "useESM": true
-        }
-      ]
-    }
-  },
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+  "packageManager": "pnpm@10.33.0"
 }

@@ -1,6 +1,6 @@
 import { $ZodError, toDotPath } from "zod/v4/core";
-import type { Schemas } from "./parse-env.js";
 import type * as z from "zod/v4";
+import type { Schemas } from "./parse-env.js";
 
 export interface ErrorWithContext {
   /** The env var name. */
