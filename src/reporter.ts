@@ -50,9 +50,7 @@ function prettifyError(
 ): string {
   const lines: string[] = [];
   // sort by path length
-  const issues = [...error.issues].toSorted(
-    (a, b) => a.path.length - b.path.length,
-  );
+  const issues = error.issues.toSorted((a, b) => a.path.length - b.path.length);
 
   // Process each issue
   for (const issue of issues) {

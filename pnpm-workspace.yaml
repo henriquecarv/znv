@@ -1,4 +1,8 @@
+allowBuilds:
+  unrs-resolver: true
 overrides:
+  # fflate@0.8.3 breaks @arethetypeswrong streaming Gunzip (attw test:attw).
+  fflate: 0.8.2
   # Cap at 1.x: ">=1.1.13" alone can resolve to brace-expansion@5, which breaks minimatch@3 (ESLint).
   brace-expansion@<1.1.13: '>=1.1.13 <2.0.0'
   brace-expansion@>=1.0.0 <=1.1.11: '>=1.1.12 <2.0.0'

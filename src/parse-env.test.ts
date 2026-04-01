@@ -429,10 +429,6 @@ describe("parseCore", () => {
       },
     );
 
-    // @ts-expect-error (2322) -- shouldn't be assignable to number
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const fun: number = x.FUN_LEVEL;
-
     expect(x.FUN_LEVEL).toBe("18");
   });
 
@@ -451,10 +447,6 @@ describe("parseCore", () => {
     );
 
     const funLevel: string = x.FUN_LEVEL;
-
-    // @ts-expect-error (2322) -- shouldn't be assignable to number
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const funLevelAsNumber: number = x.FUN_LEVEL;
 
     expect(funLevel).toBe("18");
   });

@@ -130,9 +130,7 @@ export function parseEnvImpl<T extends Schemas & RestrictSchemas<T>>(
   schemas: T,
   reporterOrTokenFormatters: Reporter | TokenFormatters,
 ): DeepReadonlyObject<ParsedSchema<T>> {
-  const parsed: Record<string, unknown> = {} as DeepReadonlyObject<
-    ParsedSchema<T>
-  >;
+  const parsed: Record<string, unknown> = {};
   const reporter =
     typeof reporterOrTokenFormatters === "function"
       ? reporterOrTokenFormatters
