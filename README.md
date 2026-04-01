@@ -47,17 +47,17 @@ about final API design are welcome.
 ## Quickstart
 
 ```bash
-npm i znv zod
+npm i @henriquecarv/znv zod
 # or
-pnpm add znv zod
+pnpm add @henriquecarv/znv zod
 # or
-yarn add znv zod
+yarn add @henriquecarv/znv zod
 ```
 
 Create a file named something like `env.ts`:
 
 ```ts
-import { parseEnv } from "znv";
+import { parseEnv } from "@henriquecarv/znv";
 import { z } from "zod";
 
 export const { NICKNAME, LLAMA_COUNT, COLOR, SHINY } = parseEnv(process.env, {
@@ -101,7 +101,7 @@ A more elaborate example:
 
 ```ts
 // znv re-exports zod as 'z' to save a few keystrokes.
-import { parseEnv, z, port } from "znv";
+import { parseEnv, z, port } from "@henriquecarv/znv";
 
 export const { API_SERVER, HOST, PORT, EDITORS, POST_LIMIT, AUTH_SERVER } =
   parseEnv(process.env, {
