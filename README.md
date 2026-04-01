@@ -6,7 +6,7 @@
 
 <p align="center">
 <a href="https://www.npmjs.com/package/@henriquecarv/znv">
-<img src="https://img.shields.io/npm/v/znv.svg?logo=npm" alt="NPM version" />
+<img src="https://img.shields.io/npm/v/@henriquecarv/znv.svg?logo=npm" alt="NPM version" />
 </a>
 </p>
 
