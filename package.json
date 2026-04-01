@@ -74,7 +74,7 @@
     "zod": "^4"
   },
   "publishConfig": {
-    "@henriquecarv:registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com/"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
