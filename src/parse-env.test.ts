@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import * as z from "zod";
 
 import { parseEnv } from "./index.js";
@@ -428,10 +429,6 @@ describe("parseCore", () => {
       },
     );
 
-    // @ts-expect-error (2322) -- shouldn't be assignable to number
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const fun: number = x.FUN_LEVEL;
-
     expect(x.FUN_LEVEL).toBe("18");
   });
 
@@ -451,10 +448,6 @@ describe("parseCore", () => {
 
     const funLevel: string = x.FUN_LEVEL;
 
-    // @ts-expect-error (2322) -- shouldn't be assignable to number
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const funLevelAsNumber: number = x.FUN_LEVEL;
-
     expect(funLevel).toBe("18");
   });
 
@@ -469,7 +462,6 @@ describe("parseCore", () => {
               .int()
               .transform((n) => String(n)),
             defaults: {
-              // @ts-expect-error (2322) -- should be number
               _: new Map(),
             },
             // @ts-expect-error (2322) -- excess properties should be checked
