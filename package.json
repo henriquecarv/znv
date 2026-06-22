@@ -77,20 +77,20 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
-    "@commitlint/cli": "21.0.1",
-    "@commitlint/config-conventional": "21.0.1",
-    "@types/node": "22.19.19",
-    "@vitest/ui": "4.1.7",
-    "eslint": "10.4.0",
+    "@arethetypeswrong/cli": "0.18.3",
+    "@commitlint/cli": "21.0.2",
+    "@commitlint/config-conventional": "21.0.2",
+    "@types/node": "22.20.0",
+    "@vitest/ui": "4.1.9",
+    "eslint": "10.5.0",
     "eslint-config-lostfictions": "8.1.1",
     "husky": "9.1.7",
-    "npm-run-all2": "^9.0.0",
-    "prettier": "3.8.3",
+    "npm-run-all2": "^9.0.2",
+    "prettier": "3.8.4",
     "ts-node": "10.9.2",
     "typescript": "6.0.3",
-    "vitest": "4.1.7",
+    "vitest": "4.1.9",
     "zod": "~4.4.3"
   },
-  "packageManager": "pnpm@11.2.2"
+  "packageManager": "pnpm@11.8.0"
 }
