@@ -26,57 +26,40 @@
 
 import { isatty } from "node:tty";
 
-const {
-  env = {},
-  argv = [],
-  platform = "",
-} = typeof process === "undefined" ? {} : process;
+const { env = {}, argv = [], platform = "" } = typeof process === "undefined" ? {} : process;
 
 const isDisabled = "NO_COLOR" in env || argv.includes("--no-color");
 const isForced = "FORCE_COLOR" in env || argv.includes("--color");
 const isWindows = platform === "win32";
 const isDumbTerminal = env["TERM"] === "dumb";
 
-const isCompatibleTerminal = Boolean(
-  isatty(1) && env["TERM"] && !isDumbTerminal,
-);
+const isCompatibleTerminal = Boolean(isatty(1) && env["TERM"] && !isDumbTerminal);
 
-const isCI =
-  "CI" in env &&
-  ("GITHUB_ACTIONS" in env || "GITLAB_CI" in env || "CIRCLECI" in env);
+const isCI = "CI" in env && ("GITHUB_ACTIONS" in env || "GITLAB_CI" in env || "CIRCLECI" in env);
 
 export const isColorSupported =
-  !isDisabled &&
-  (isForced || (isWindows && !isDumbTerminal) || isCompatibleTerminal || isCI);
+	!isDisabled && (isForced || (isWindows && !isDumbTerminal) || isCompatibleTerminal || isCI);
 
 const replaceClose = (
-  index: number,
-  str: string,
-  close: string,
-  replace: string,
-  head = str.slice(0, index) + replace,
-  tail = str.slice(index + close.length),
-  next = tail.indexOf(close),
-): string =>
-  head + (next < 0 ? tail : replaceClose(next, tail, close, replace));
+	index: number,
+	str: string,
+	close: string,
+	replace: string,
+	head = str.slice(0, index) + replace,
+	tail = str.slice(index + close.length),
+	next = tail.indexOf(close),
+): string => head + (next < 0 ? tail : replaceClose(next, tail, close, replace));
 
 const clearBleed = (index: number, str: string, open: string, close: string) =>
-  index < 0
-    ? open + str + close
-    : open + replaceClose(index, str, close, open) + close;
+	index < 0 ? open + str + close : open + replaceClose(index, str, close, open) + close;
 
 const filterEmpty = (open: string, close: string) => (str: unknown) =>
-  str || !(str === "" || str === undefined)
-    ? clearBleed(
-        String(str).indexOf(close, open.length + 1),
-        String(str),
-        open,
-        close,
-      )
-    : "";
+	str || !(str === "" || str === undefined)
+		? clearBleed(String(str).indexOf(close, open.length + 1), String(str), open, close)
+		: "";
 
 const create = (open: number, close: number) =>
-  isColorSupported ? filterEmpty(`\x1b[${open}m`, `\x1b[${close}m`) : String;
+	isColorSupported ? filterEmpty(`\x1b[${open}m`, `\x1b[${close}m`) : String;
 
 export const red = create(31, 39);
 export const green = create(32, 39);

@@ -2,11 +2,7 @@ export { z } from "zod";
 export * from "./parse-env.js";
 export * from "./preprocessors.js";
 export * from "./extra-schemas.js";
-export type {
-  DeepReadonly,
-  DeepReadonlyArray,
-  DeepReadonlyObject,
-} from "./util/type-helpers.js";
+export type { DeepReadonly, DeepReadonlyArray, DeepReadonlyObject } from "./util/type-helpers.js";
 
 import { parseEnvImpl, type ParseEnv } from "./parse-env.js";
 
@@ -15,8 +11,5 @@ import { parseEnvImpl, type ParseEnv } from "./parse-env.js";
  * and returns the immutably-typed, parsed environment. Compatible with
  * serverless and browser environments.
  */
-export const parseEnv: ParseEnv = (
-  env,
-  schemas,
-  reporterOrTokenFormatters = {},
-) => parseEnvImpl(env, schemas, reporterOrTokenFormatters);
+export const parseEnv: ParseEnv = (env, schemas, reporterOrTokenFormatters = {}) =>
+	parseEnvImpl(env, schemas, reporterOrTokenFormatters);

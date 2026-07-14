@@ -1,96 +1,97 @@
 {
-  "name": "@henriquecarv/znv",
-  "version": "0.6.5",
-  "description": "Parse your environment with Zod schemas",
-  "license": "MIT",
-  "keywords": [
-    "env",
-    "process.env",
-    "zod",
-    "validation"
-  ],
-  "author": "Henrique Carvalho da Cruz <henriquecarv@gmail.com>",
-  "homepage": "https://github.com/henriquecarv/znv",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/henriquecarv/znv.git"
-  },
-  "bugs": {
-    "url": "https://github.com/henriquecarv/znv/issues"
-  },
-  "type": "module",
-  "main": "dist-cjs/index.js",
-  "types": "dist/index.d.ts",
-  "module": "dist/index.js",
-  "files": [
-    "dist/",
-    "dist-cjs/"
-  ],
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist-cjs/index.d.ts",
-        "default": "./dist-cjs/index.js"
-      }
-    },
-    "./compat": {
-      "import": {
-        "types": "./dist/compat.d.ts",
-        "default": "./dist/compat.js"
-      },
-      "require": {
-        "types": "./dist-cjs/compat.d.ts",
-        "default": "./dist-cjs/compat.js"
-      }
-    }
-  },
-  "scripts": {
-    "prepare": "husky",
-    "pre-commit": "run-s -l \"lint\" \"test\"",
-    "build": "run-s -l \"build:*\"",
-    "build:clean": "rm -rf dist/ dist-cjs/",
-    "build:mjs": "tsc --project tsconfig.build.json",
-    "build:cjs": "tsc --project tsconfig.cjs.build.json",
-    "build:copy": "cp package.cjs.json dist-cjs/package.json",
-    "test": "run-p -cl \"test:*\"",
-    "test:ts": "tsc --noEmit",
-    "test:eslint": "eslint --color src",
-    "test:vitest": "vitest run",
-    "test:prettier": "prettier -l \"src/**/*\"",
-    "test:attw": "attw . --pack --profile node16",
-    "prettier": "prettier \"src/**/*\" --write",
-    "vitest": "vitest --watch",
-    "lint": "eslint .",
-    "postlint": "prettier --check .",
-    "lint-fix": "eslint . --fix",
-    "postlint-fix": "prettier --write .",
-    "prepublishOnly": "run-s -l test build"
-  },
-  "peerDependencies": {
-    "zod": "^4"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
-  "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.3",
-    "@commitlint/cli": "21.0.2",
-    "@commitlint/config-conventional": "21.0.2",
-    "@types/node": "22.20.0",
-    "@vitest/ui": "4.1.9",
-    "eslint": "10.5.0",
-    "eslint-config-lostfictions": "8.1.1",
-    "husky": "9.1.7",
-    "npm-run-all2": "^9.0.2",
-    "prettier": "3.8.4",
-    "ts-node": "10.9.2",
-    "typescript": "6.0.3",
-    "vitest": "4.1.9",
-    "zod": "~4.4.3"
-  },
-  "packageManager": "pnpm@11.8.0"
+	"name": "@henriquecarv/znv",
+	"version": "0.6.6",
+	"description": "Parse your environment with Zod schemas",
+	"license": "MIT",
+	"keywords": [
+		"env",
+		"process.env",
+		"zod",
+		"validation"
+	],
+	"author": "Henrique Carvalho da Cruz <henriquecarv@gmail.com>",
+	"homepage": "https://github.com/henriquecarv/znv",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/henriquecarv/znv.git"
+	},
+	"bugs": {
+		"url": "https://github.com/henriquecarv/znv/issues"
+	},
+	"type": "module",
+	"main": "dist-cjs/index.js",
+	"types": "dist/index.d.ts",
+	"module": "dist/index.js",
+	"files": [
+		"dist/",
+		"dist-cjs/"
+	],
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist-cjs/index.d.ts",
+				"default": "./dist-cjs/index.js"
+			}
+		},
+		"./compat": {
+			"import": {
+				"types": "./dist/compat.d.ts",
+				"default": "./dist/compat.js"
+			},
+			"require": {
+				"types": "./dist-cjs/compat.d.ts",
+				"default": "./dist-cjs/compat.js"
+			}
+		}
+	},
+	"scripts": {
+		"prepare": "husky",
+		"pre-commit": "run-s -l \"lint\" \"test\"",
+		"build": "run-s -l \"build:*\"",
+		"build:clean": "rm -rf dist/ dist-cjs/",
+		"build:mjs": "tsc --project tsconfig.build.json",
+		"build:cjs": "tsc --project tsconfig.cjs.build.json",
+		"build:copy": "cp package.cjs.json dist-cjs/package.json",
+		"test": "run-p -cl \"test:*\"",
+		"test:ts": "tsc --noEmit",
+		"test:eslint": "eslint --color src",
+		"test:vitest": "vitest run",
+		"test:prettier": "prettier -l \"src/**/*\"",
+		"test:attw": "attw . --pack --profile node16",
+		"prettier": "prettier \"src/**/*\" --write",
+		"vitest": "vitest --watch",
+		"lint": "eslint .",
+		"postlint": "prettier --check .",
+		"lint-fix": "eslint . --fix",
+		"postlint-fix": "prettier --write .",
+		"prepublishOnly": "run-s -l test build"
+	},
+	"peerDependencies": {
+		"zod": "^4"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com/"
+	},
+	"devDependencies": {
+		"@arethetypeswrong/cli": "0.18.5",
+		"@commitlint/cli": "21.2.1",
+		"@commitlint/config-conventional": "21.2.0",
+		"@types/node": "22.20.1",
+		"@typescript/native": "npm:typescript@^7.0.2",
+		"@vitest/ui": "4.1.10",
+		"eslint": "10.7.0",
+		"eslint-config-lostfictions": "8.1.1",
+		"husky": "9.1.7",
+		"npm-run-all2": "^9.0.2",
+		"prettier": "3.9.5",
+		"ts-node": "10.9.2",
+		"typescript": "npm:@typescript/typescript6@^6.0.2",
+		"vitest": "4.1.10",
+		"zod": "~4.4.3"
+	},
+	"packageManager": "pnpm@11.13.0"
 }

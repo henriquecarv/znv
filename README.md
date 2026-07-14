@@ -37,8 +37,8 @@ about final API design are welcome.
 - [Quickstart](#quickstart)
 - [Motivation](#motivation)
 - [Usage](#usage)
-  - [`parseEnv`](#parseenvenvironment-schemas-reporterOrFormatters)
-  - [Extra schemas](#extra-schemas)
+    - [`parseEnv`](#parseenvenvironment-schemas-reporterOrFormatters)
+    - [Extra schemas](#extra-schemas)
 - [Coercion rules](#coercion-rules)
 - [Comparison to other libraries](#comparison-to-other-libraries)
 - [Complementary tooling](#complementary-tooling)
@@ -61,10 +61,10 @@ import { parseEnv } from "@henriquecarv/znv";
 import { z } from "zod";
 
 export const { NICKNAME, LLAMA_COUNT, COLOR, SHINY } = parseEnv(process.env, {
-  NICKNAME: z.string().min(1),
-  LLAMA_COUNT: z.number().int().positive(),
-  COLOR: z.enum(["red", "blue"]),
-  SHINY: z.boolean().default(true),
+	NICKNAME: z.string().min(1),
+	LLAMA_COUNT: z.number().int().positive(),
+	COLOR: z.enum(["red", "blue"]),
+	SHINY: z.boolean().default(true),
 });
 
 console.log([NICKNAME, LLAMA_COUNT, COLOR, SHINY].join(", "));
@@ -103,54 +103,51 @@ A more elaborate example:
 // znv re-exports zod as 'z' to save a few keystrokes.
 import { parseEnv, z, port } from "@henriquecarv/znv";
 
-export const { API_SERVER, HOST, PORT, EDITORS, POST_LIMIT, AUTH_SERVER } =
-  parseEnv(process.env, {
-    // you can provide defaults with `.default()`. these will be validated
-    // against the schema.
-    API_SERVER: z.string().url().default("https://api.llamafy.biz"),
+export const { API_SERVER, HOST, PORT, EDITORS, POST_LIMIT, AUTH_SERVER } = parseEnv(process.env, {
+	// you can provide defaults with `.default()`. these will be validated
+	// against the schema.
+	API_SERVER: z.string().url().default("https://api.llamafy.biz"),
 
-    // specs can also be more detailed.
-    HOST: {
-      schema: z.string().min(1),
+	// specs can also be more detailed.
+	HOST: {
+		schema: z.string().min(1),
 
-      // the description is handy as in-code documentation, but is also printed
-      // to the console if validation for this env var fails.
-      description: "The hostname for this service.",
+		// the description is handy as in-code documentation, but is also printed
+		// to the console if validation for this env var fails.
+		description: "The hostname for this service.",
 
-      // instead of specifying defaults as part of the zod schema, you can pass
-      // them in the `defaults` object. a default will be matched based on the
-      // value of `NODE_ENV`.
-      defaults: {
-        production: "my-cool-llama.website",
-        test: "cool-llama-staging.cloud-provider.zone",
+		// instead of specifying defaults as part of the zod schema, you can pass
+		// them in the `defaults` object. a default will be matched based on the
+		// value of `NODE_ENV`.
+		defaults: {
+			production: "my-cool-llama.website",
+			test: "cool-llama-staging.cloud-provider.zone",
 
-        // "_" is a special token that can be used in `defaults`. its value will
-        // be used if `NODE_ENV` doesn't match any other provided key.
-        _: "localhost",
-      },
-    },
+			// "_" is a special token that can be used in `defaults`. its value will
+			// be used if `NODE_ENV` doesn't match any other provided key.
+			_: "localhost",
+		},
+	},
 
-    // znv provides helpers for a few very common environment var types not
-    // covered by zod. these can have further refinements chained to them:
-    PORT: port().default(8080),
+	// znv provides helpers for a few very common environment var types not
+	// covered by zod. these can have further refinements chained to them:
+	PORT: port().default(8080),
 
-    // using a zod `array()` or `object()` as a spec will make znv attempt to
-    // `JSON.parse` the env var if it's present.
-    EDITORS: z.array(z.string().min(1)),
+	// using a zod `array()` or `object()` as a spec will make znv attempt to
+	// `JSON.parse` the env var if it's present.
+	EDITORS: z.array(z.string().min(1)),
 
-    // optional values are also supported and provide a way to benefit from the
-    // validation and static typing provided by zod even if you don't want to
-    // error out on a missing value.
-    POST_LIMIT: z.number().optional(),
+	// optional values are also supported and provide a way to benefit from the
+	// validation and static typing provided by zod even if you don't want to
+	// error out on a missing value.
+	POST_LIMIT: z.number().optional(),
 
-    // use all of the expressiveness of zod, including enums and post-processing.
-    AUTH_SERVER: z
-      .enum(["prod", "staging"])
-      .optional()
-      .transform((prefix) =>
-        prefix ? `http://auth-${prefix}.cool-llama.app` : "http://localhost:91",
-      ),
-  });
+	// use all of the expressiveness of zod, including enums and post-processing.
+	AUTH_SERVER: z
+		.enum(["prod", "staging"])
+		.optional()
+		.transform((prefix) => (prefix ? `http://auth-${prefix}.cool-llama.app` : "http://localhost:91")),
+});
 ```
 
 If any env var fails validation, `parseEnv()` will throw. All failing specs will
@@ -240,88 +237,88 @@ pass a `DetailedSpec` object that has the following fields:
 
 - `schema: ZodType`
 
-  The Zod validator schema.
+    The Zod validator schema.
 
 - `description?: string`
 
-  Optional help text that will be displayed when this env var is missing or
-  fails to validate.
+    Optional help text that will be displayed when this env var is missing or
+    fails to validate.
 
 - `defaults?: Record<string, SchemaInput | undefined>`
 
-  An object that maps from `NODE_ENV` values to values that will be passed as
-  input to the schema if this var isn't present in the environment. For example:
+    An object that maps from `NODE_ENV` values to values that will be passed as
+    input to the schema if this var isn't present in the environment. For example:
 
-  ```ts
-  const schemas = {
-    FRUIT: {
-      schema: z.string().min(1),
-      defaults: {
-        production: "orange",
-        development: "banana",
-      },
-    },
-  };
+    ```ts
+    const schemas = {
+    	FRUIT: {
+    		schema: z.string().min(1),
+    		defaults: {
+    			production: "orange",
+    			development: "banana",
+    		},
+    	},
+    };
 
-  // FRUIT wll have value "banana".
-  const { FRUIT } = parseEnv({ NODE_ENV: "development" }, schemas);
+    // FRUIT wll have value "banana".
+    const { FRUIT } = parseEnv({ NODE_ENV: "development" }, schemas);
 
-  // FRUIT wll have value "orange".
-  const { FRUIT } = parseEnv({ NODE_ENV: "production" }, schemas);
+    // FRUIT wll have value "orange".
+    const { FRUIT } = parseEnv({ NODE_ENV: "production" }, schemas);
 
-  // FRUIT wll have value "fig".
-  const { FRUIT } = parseEnv({ NODE_ENV: "production", FRUIT: "fig" }, schemas);
+    // FRUIT wll have value "fig".
+    const { FRUIT } = parseEnv({ NODE_ENV: "production", FRUIT: "fig" }, schemas);
 
-  // FRUIT wll have value "apple".
-  const { FRUIT } = parseEnv({ FRUIT: "apple" }, schemas);
+    // FRUIT wll have value "apple".
+    const { FRUIT } = parseEnv({ FRUIT: "apple" }, schemas);
 
-  // this will throw, since NODE_ENV doesn't match "production" or "development".
-  const { FRUIT } = parseEnv({}, schemas);
-  ```
+    // this will throw, since NODE_ENV doesn't match "production" or "development".
+    const { FRUIT } = parseEnv({}, schemas);
+    ```
 
-  `defaults` accepts a special token as a key: `_`. This is like the `default`
-  clause in a `switch` case — its value will be used if `NODE_ENV` doesn't match
-  any other key in `defaults`.
+    `defaults` accepts a special token as a key: `_`. This is like the `default`
+    clause in a `switch` case — its value will be used if `NODE_ENV` doesn't match
+    any other key in `defaults`.
 
-  > (As an aside, it is **not recommended** to use `staging` as a possible value
-  > for `NODE_ENV`. Your staging environment should be as similar to your
-  > production environment as possible, and `NODE_ENV=production` has special
-  > meaning for several tools and libraries. For example,
-  > [`npm install`](https://docs.npmjs.com/cli/v8/commands/npm-install) and
-  > [`yarn install`](https://classic.yarnpkg.com/en/docs/cli/install#toc-yarn-install-production-true-false)
-  > by default won't install `devDependencies` if `NODE_ENV=production`;
-  > [Express](https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production)
-  > and [React](https://reactjs.org/docs/optimizing-performance.html) will also
-  > behave differently depending on whether `NODE_ENV` is `production` or not.
-  > Instead, your staging environment should also set `NODE_ENV=production`, and
-  > you should define your own env var(s) for any special configuration that's
-  > necessary for your staging environment.)
+    > (As an aside, it is **not recommended** to use `staging` as a possible value
+    > for `NODE_ENV`. Your staging environment should be as similar to your
+    > production environment as possible, and `NODE_ENV=production` has special
+    > meaning for several tools and libraries. For example,
+    > [`npm install`](https://docs.npmjs.com/cli/v8/commands/npm-install) and
+    > [`yarn install`](https://classic.yarnpkg.com/en/docs/cli/install#toc-yarn-install-production-true-false)
+    > by default won't install `devDependencies` if `NODE_ENV=production`;
+    > [Express](https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production)
+    > and [React](https://reactjs.org/docs/optimizing-performance.html) will also
+    > behave differently depending on whether `NODE_ENV` is `production` or not.
+    > Instead, your staging environment should also set `NODE_ENV=production`, and
+    > you should define your own env var(s) for any special configuration that's
+    > necessary for your staging environment.)
 
-  Caveats aside, `_` lets you express a few interesting scenarios:
+    Caveats aside, `_` lets you express a few interesting scenarios:
 
-  ```ts
-  // one default for production, and one for all other environments, including
-  // development and testing.
-  { production: "prod default", _: "dev default" }
+    ```ts
+    // one default for production, and one for all other environments, including
+    // development and testing.
+    { production: "prod default", _: "dev default" }
 
-  // default for all non-production environments, but require the var to be
-  // passed in for production.
-  { production: undefined, _: "dev default" }
+    // default for all non-production environments, but require the var to be
+    // passed in for production.
+    { production: undefined, _: "dev default" }
 
-  // unconditional default. equivalent to adding `.default("some default")`
-  // to the zod schema, but this might be more stylistically consistent with
-  // your other specs if they use the `defaults` field.
-  { _: "unconditional default" }
-  ```
+    // unconditional default. equivalent to adding `.default("some default")`
+    // to the zod schema, but this might be more stylistically consistent with
+    // your other specs if they use the `defaults` field.
+    { _: "unconditional default" }
+    ```
 
-  Some testing tools like [Jest](https://jestjs.io/) set `NODE_ENV` to `test`,
-  so you can also use `defaults` to provide default env vars for testing.
+    Some testing tools like [Jest](https://jestjs.io/) set `NODE_ENV` to `test`,
+    so you can also use `defaults` to provide default env vars for testing.
 
-  `parseEnv` doesn't restrict or validate `NODE_ENV` to any particular values,
-  but you can add `NODE_ENV` to your schemas like any other env var. For
-  example, you could use
-  `NODE_ENV: z.enum(["production", "development", "test", "ci"])` to enforce
-  that `NODE_ENV` is always defined and is one of those four expected values.
+    `parseEnv` doesn't restrict or validate `NODE_ENV` to any particular values,
+    but you can add `NODE_ENV` to your schemas like any other env var. For
+    example, you could use
+    `NODE_ENV: z.enum(["production", "development", "test", "ci"])` to enforce
+    that `NODE_ENV` is always defined and is one of those four expected values.
 
 #### `reporterOrFormatters?: Reporter | TokenFormatters`
 
@@ -330,58 +327,58 @@ the displayed output when a validation error occurs.
 
 - `Reporter: (errors: ErrorWithContext[], schemas: Schemas) => string`
 
-  A reporter is a function that takes a list of errors and the schemas you
-  passed to `parseEnv` and returns a `string`. Each error has the following
-  format:
+    A reporter is a function that takes a list of errors and the schemas you
+    passed to `parseEnv` and returns a `string`. Each error has the following
+    format:
 
-  ```ts
-  {
-    /** The env var name. */
-    key: string;
-    /** The actual value present in `process.env[key]`, or undefined. */
-    receivedValue: unknown;
-    /** `ZodError` if Zod parsing failed, or `Error` if a preprocessor threw. */
-    error: unknown;
-    /** If a default was provided, whether the default value was used. */
-    defaultUsed: boolean;
-    /** If a default was provided, the given default value. */
-    defaultValue: unknown;
-  }
-  ```
+    ```ts
+    {
+    	/** The env var name. */
+    	key: string;
+    	/** The actual value present in `process.env[key]`, or undefined. */
+    	receivedValue: unknown;
+    	/** `ZodError` if Zod parsing failed, or `Error` if a preprocessor threw. */
+    	error: unknown;
+    	/** If a default was provided, whether the default value was used. */
+    	defaultUsed: boolean;
+    	/** If a default was provided, the given default value. */
+    	defaultValue: unknown;
+    }
+    ```
 
 - `TokenFormatters`
 
-  An object with the following structure:
+    An object with the following structure:
 
-  ```ts
-    {
-    /** Formatter for the env var name. */
-    formatVarName?: (key: string) => string;
+    ```ts
+      {
+      /** Formatter for the env var name. */
+      formatVarName?: (key: string) => string;
 
-    /** For parsed objects with errors, formatter for object keys. */
-    formatObjKey?: (key: string) => string;
+      /** For parsed objects with errors, formatter for object keys. */
+      formatObjKey?: (key: string) => string;
 
-    /** Formatter for the actual value we received for the env var. */
-    formatReceivedValue?: (val: unknown) => string;
+      /** Formatter for the actual value we received for the env var. */
+      formatReceivedValue?: (val: unknown) => string;
 
-    /** Formatter for the default value provided for the schema. */
-    formatDefaultValue?: (val: unknown) => string;
+      /** Formatter for the default value provided for the schema. */
+      formatDefaultValue?: (val: unknown) => string;
 
-    /** Formatter for the error summary header. */
-    formatHeader?: (header: string) => string;
-  }
-  ```
+      /** Formatter for the error summary header. */
+      formatHeader?: (header: string) => string;
+    }
+    ```
 
-  For example, if you want to redact value names, you can invoke `parseEnv` like
-  this:
+    For example, if you want to redact value names, you can invoke `parseEnv` like
+    this:
 
-  ```ts
-  export const { SOME_VAL } = parseEnv(
-    process.env,
-    { SOME_VAL: z.number().nonnegative() },
-    { formatReceivedValue: () => "<redacted>" },
-  );
-  ```
+    ```ts
+    export const { SOME_VAL } = parseEnv(
+    	process.env,
+    	{ SOME_VAL: z.number().nonnegative() },
+    	{ formatReceivedValue: () => "<redacted>" },
+    );
+    ```
 
 ### Extra schemas
 
@@ -423,25 +420,25 @@ Some notable coercion mechanics:
   `"1"` to `true`, and `"false"`, `"no"` and `"0"` to `false`. All other values
   will be passed through.
 
-  > Some CLI tool conventions dictate that a variable simply being present in
-  > the environment (even with no value, eg. setting `MY_VALUE=` with no
-  > right-hand side) should be interpreted as `true`. However, this convention
-  > doesn't seem to be in widespread use in Node, probably because it causes the
-  > var to evaluate to the empty string (which is falsy). znv demands a little
-  > more specificity by default, while still hedging a bit for some common
-  > true/false equivalents. If you want the "any defined value" behaviour, you
-  > can use
-  > `z.string().optional().transform(v => v === undefined ? false : true)`.
+    > Some CLI tool conventions dictate that a variable simply being present in
+    > the environment (even with no value, eg. setting `MY_VALUE=` with no
+    > right-hand side) should be interpreted as `true`. However, this convention
+    > doesn't seem to be in widespread use in Node, probably because it causes the
+    > var to evaluate to the empty string (which is falsy). znv demands a little
+    > more specificity by default, while still hedging a bit for some common
+    > true/false equivalents. If you want the "any defined value" behaviour, you
+    > can use
+    > `z.string().optional().transform(v => v === undefined ? false : true)`.
 
 - If your schema's input is an object or array (or record or tuple), znv will
   attempt to `JSON.parse` the input value if it's not `undefined` or the empty
   string.
 
-  > **Remember, with great power comes great responsibility!** If you're using
-  > an object or array schema to pass in dozens or hundreds of kilobytes of data
-  > as an env var, you may be doing something wrong. (Certain platforms also
-  > [impose limits on environment variable
-  > length](https://devblogs.microsoft.com/oldnewthing/20100203-00/?p=15083).)
+    > **Remember, with great power comes great responsibility!** If you're using
+    > an object or array schema to pass in dozens or hundreds of kilobytes of data
+    > as an env var, you may be doing something wrong. (Certain platforms also
+    > [impose limits on environment variable
+    > length](https://devblogs.microsoft.com/oldnewthing/20100203-00/?p=15083).)
 
 - If your schema's input is a Date, znv will call `new Date()` with the input
   value. This has a number of pitfalls, since the `Date()` constructor is

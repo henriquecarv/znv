@@ -1,6 +1,7 @@
 allowBuilds:
   unrs-resolver: true
 overrides:
+  eslint-plugin-sonarjs>typescript: 6.0.3
   # fflate@0.8.3 breaks @arethetypeswrong streaming Gunzip (attw test:attw).
   fflate: 0.8.2
   # Cap at 1.x: ">=1.1.13" alone can resolve to brace-expansion@5, which breaks minimatch@3 (ESLint).

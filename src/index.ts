@@ -2,11 +2,7 @@ export { z } from "zod";
 export * from "./parse-env.js";
 export * from "./preprocessors.js";
 export * from "./extra-schemas.js";
-export type {
-  DeepReadonly,
-  DeepReadonlyArray,
-  DeepReadonlyObject,
-} from "./util/type-helpers.js";
+export type { DeepReadonly, DeepReadonlyArray, DeepReadonlyObject } from "./util/type-helpers.js";
 
 import { parseEnvImpl, type ParseEnv } from "./parse-env.js";
 import { cyan, green, red, yellow } from "./util/tty-colors.js";
@@ -19,13 +15,13 @@ import { cyan, green, red, yellow } from "./util/tty-colors.js";
  * and returns the immutably-typed, parsed environment.
  */
 export const parseEnv: ParseEnv = (
-  env,
-  schemas,
-  reporterOrTokenFormatters = {
-    formatVarName: yellow,
-    formatObjKey: green,
-    formatReceivedValue: cyan,
-    formatDefaultValue: cyan,
-    formatHeader: red,
-  },
+	env,
+	schemas,
+	reporterOrTokenFormatters = {
+		formatVarName: yellow,
+		formatObjKey: green,
+		formatReceivedValue: cyan,
+		formatDefaultValue: cyan,
+		formatHeader: red,
+	},
 ) => parseEnvImpl(env, schemas, reporterOrTokenFormatters);
