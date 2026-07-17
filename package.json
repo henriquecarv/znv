@@ -73,13 +73,11 @@
 	"peerDependencies": {
 		"zod": "^4"
 	},
-	"publishConfig": {
-		"registry": "https://npm.pkg.github.com/"
-	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "0.18.5",
 		"@commitlint/cli": "21.2.1",
 		"@commitlint/config-conventional": "21.2.0",
+		"@tsconfig/node22": "^22.0.5",
 		"@types/node": "22.20.1",
 		"@typescript/native": "npm:typescript@^7.0.2",
 		"@vitest/ui": "4.1.10",
