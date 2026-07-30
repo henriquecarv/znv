@@ -1,6 +1,6 @@
 {
 	"name": "@henriquecarv/znv",
-	"version": "0.6.6",
+	"version": "0.6.7",
 	"description": "Parse your environment with Zod schemas",
 	"license": "MIT",
 	"keywords": [
