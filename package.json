@@ -1,6 +1,6 @@
 {
 	"name": "@henriquecarv/znv",
-	"version": "0.6.7",
+	"version": "0.6.8",
 	"description": "Parse your environment with Zod schemas",
 	"license": "MIT",
 	"keywords": [
@@ -90,6 +90,10 @@
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
 		"vitest": "4.1.11",
 		"zod": "~4.5.4"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
 	},
 	"packageManager": "pnpm@11.24.0"
 }
