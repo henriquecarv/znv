@@ -1,6 +1,6 @@
 {
 	"name": "@henriquecarv/znv",
-	"version": "0.6.8",
+	"version": "0.6.10",
 	"description": "Parse your environment with Zod schemas",
 	"license": "MIT",
 	"keywords": [
@@ -48,11 +48,6 @@
 			}
 		}
 	},
-	"overrides": {
-		"browserslist": "4.28.7",
-		"fflate": "0.8.3",
-		"baseline-browser-mapping": "2.11.0"
-	},
 	"scripts": {
 		"prepare": "husky",
 		"pre-commit": "run-s -l \"lint\" \"test\"",
@@ -96,9 +91,5 @@
 		"vite": "^8.3.5",
 		"vitest": "5.0.5",
 		"zod": "~4.6.7"
-	},
-	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
 	}
 }
