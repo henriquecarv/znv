@@ -1,4 +1,4 @@
-name: Build and test
+name: Build, test and Publish
 
 on:
     push:
@@ -40,7 +40,7 @@ jobs:
             - uses: actions/setup-node@v7
               with:
                   node-version-file: .nvmrc
-                  cache: "npm"
+                  package-manager-cache: false # never use caching in release builds
             - name: Install dependencies
               run: npm clean-install --legacy-peer-deps
             - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
