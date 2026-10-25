@@ -48,4 +48,7 @@ jobs:
             - name: Release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  # semantic-release pushes its generated release commit/tag; local developer
+                  # pre-push gates must not block that CI-owned push.
+                  HUSKY: "0"
               run: npx semantic-release # <- The Run Commnand
