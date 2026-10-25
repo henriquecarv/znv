@@ -21,7 +21,7 @@ jobs:
                   node-version: ${{ matrix.node-version }}
                   cache: "npm"
             - name: Install dependencies
-              run: npm clean-install --legacy-peer-deps
+              run: npm ci --legacy-peer-deps --ignore-scripts
             - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
               run: npm audit signatures
             - run: npm run build
@@ -42,7 +42,7 @@ jobs:
                   node-version-file: .nvmrc
                   package-manager-cache: false # never use caching in release builds
             - name: Install dependencies
-              run: npm clean-install --legacy-peer-deps
+              run: npm ci --legacy-peer-deps --ignore-scripts
             - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
               run: npm audit signatures
             - name: Release
